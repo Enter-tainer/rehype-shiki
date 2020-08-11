@@ -1,5 +1,5 @@
 {
-  "name": "rehype-shiki",
+  "name": "@mgtd/rehype-shiki",
   "version": "0.0.9",
   "description": "rehype plugin to highlight code blocks with shiki",
   "main": "index.js",
@@ -21,9 +21,9 @@
   "author": "Margatroid <i@margatroid.xyz> (https://margatroid.xyz)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rsclarke/rehype-shiki/issues"
+    "url": "https://github.com/Enter-tainer/rehype-shiki/issues"
   },
-  "homepage": "https://github.com/rsclarke/rehype-shiki#readme",
+  "homepage": "https://github.com/Enter-tainer/rehype-shiki#readme",
   "dependencies": {
     "@mgtd/shiki": "^1.0.0",
     "hast-util-to-string": "^1.0.4",
