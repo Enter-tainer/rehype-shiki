@@ -6,13 +6,9 @@
   "files": [
     "index.js"
   ],
-  "scripts": {
-    "format": "prettier --write '**/*.js' && xo --fix",
-    "test": "xo"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rsclarke/rehype-shiki.git"
+    "url": "git+https://github.com/Enter-tainer/rehype-shiki.git"
   },
   "keywords": [
     "rehype",
@@ -22,33 +18,23 @@
     "highlight",
     "highlighting"
   ],
-  "author": "Richard Clarke <rsclrk@pm.me> (https://rsclarke.dev)",
+  "author": "Margatroid <i@margatroid.xyz> (https://margatroid.xyz)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rsclarke/rehype-shiki/issues"
   },
   "homepage": "https://github.com/rsclarke/rehype-shiki#readme",
   "dependencies": {
+    "@mgtd/shiki": "^1.0.0",
     "hast-util-to-string": "^1.0.4",
-    "shiki": "^0.1.7",
     "shiki-languages": "^0.1.6",
     "unist-builder": "^2.0.3",
     "unist-util-visit": "^2.0.3"
   },
   "devDependencies": {
-    "prettier": "2.0.5",
-    "xo": "^0.32.1"
-  },
-  "prettier": {
-    "tabWidth": 2,
-    "useTabs": false,
-    "singleQuote": true,
-    "bracketSpacing": false,
-    "semi": false,
-    "trailingComma": "none"
-  },
-  "xo": {
-    "prettier": true,
-    "esnext": false
+    "rehype-stringify": "^8.0.0",
+    "remark-parse": "^8.0.3",
+    "remark-rehype": "^7.0.0",
+    "unified": "^9.1.0"
   }
 }

@@ -1,4 +1,4 @@
-const shiki = require('shiki')
+const shiki = require('@mgtd/shiki')
 const visit = require('unist-util-visit')
 const {
   commonLangIds,
@@ -14,13 +14,14 @@ module.exports = attacher
 
 function attacher(options) {
   var settings = options || {}
-  var theme = settings.theme || 'nord'
+  var theme = settings.theme || 'light_plus'
+  const semantic = settings.semantic || true
   var useBackground =
     typeof settings.useBackground === 'undefined'
       ? true
       : Boolean(settings.useBackground)
   var shikiTheme
-  var highlighter
+  let highlighter
 
   try {
     shikiTheme = shiki.getTheme(theme)
@@ -31,18 +32,21 @@ function attacher(options) {
       throw new Error('Unable to load theme: ' + theme)
     }
   }
+  const works = []
 
   return transformer
-
   async function transformer(tree) {
     highlighter = await shiki.getHighlighter({
       theme: shikiTheme,
       langs: languages
     })
-    visit(tree, 'element', visitor)
+    visit(tree, 'element', (node, index, parent) => {
+      works.push(visitor(node, index, parent))
+    })
+    await Promise.all(works)
   }
 
-  function visitor(node, index, parent) {
+  async function visitor(node, index, parent) {
     if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return
     }
@@ -52,6 +56,7 @@ function attacher(options) {
     }
 
     const lang = codeLanguage(node)
+    console.log(lang)
 
     if (!lang) {
       // Unknown language, fall back to a foreground colour
@@ -59,10 +64,10 @@ function attacher(options) {
       return
     }
 
-    const tokens = highlighter.codeToThemedTokens(hastToString(node), lang)
+    const tokens = await highlighter.codeToThemedTokens(hastToString(node), lang, semantic ? lang === 'cpp' : false)
     const tree = tokensToHast(tokens)
-
     node.children = tree
+    node.value = undefined
   }
 }
 
