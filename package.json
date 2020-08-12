@@ -1,6 +1,6 @@
 {
   "name": "@mgtd/rehype-shiki",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "rehype plugin to highlight code blocks with shiki",
   "main": "index.js",
   "files": [
