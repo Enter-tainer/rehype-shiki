@@ -1,5 +1,5 @@
 dependencies:
-  '@mgtd/shiki': 1.0.0
+  '@mgtd/shiki': 1.0.2
   hast-util-to-string: 1.0.4
   shiki-languages: 0.1.6
   unist-builder: 2.0.3
@@ -37,7 +37,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-45hfXeboRWm6RDyaB+Y7fsdnQzRh9wS7p9/km11YpNY+rJ6C1jx/8EG8bY1fyducr+YJ1LYAoD9QiVhBNchREw==
-  /@mgtd/shiki/1.0.0:
+  /@mgtd/shiki/1.0.2:
     dependencies:
       '@mgtd/semantic-token-provider': 1.0.1
       lodash: 4.17.19
@@ -47,7 +47,7 @@ packages:
       vscode-textmate: github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4
     dev: false
     resolution:
-      integrity: sha512-oYAy2oiT0txY1hhvXW2KHnKDBJEMzvdpY5nxtykmBO4c/YJb5dU2QEzqI2UGr2scS429iGsBZ87vCMZ05ls5Pg==
+      integrity: sha512-1T0yR6df5uBN/DIioRNJPuBI8hVFptw2ggTH+dlmF+YAKRV6ZF4LHsrrO1egfmbHyuhbCm7QjFVN9ibIw7T8LQ==
   /@types/mdast/3.0.3:
     dependencies:
       '@types/unist': 2.0.3
@@ -684,7 +684,6 @@ packages:
       onigasm: ^2.1.0
       oniguruma: ^7.0.0
     resolution:
-      registry: 'https://registry.npmjs.org/'
       tarball: 'https://codeload.github.com/octref/vscode-textmate/tar.gz/e65aabe2227febda7beaad31dd0fca1228c5ddf3'
     version: 4.0.1
   github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4:
@@ -697,11 +696,10 @@ packages:
       onigasm: ^2.1.0
       oniguruma: ^7.0.0
     resolution:
-      registry: 'https://registry.npmjs.org/'
       tarball: 'https://codeload.github.com/octref/vscode-textmate/tar.gz/e65aabe2227febda7beaad31dd0fca1228c5ddf3'
     version: 4.0.1
 specifiers:
-  '@mgtd/shiki': ^1.0.0
+  '@mgtd/shiki': ^1.0.2
   hast-util-to-string: ^1.0.4
   rehype-stringify: ^8.0.0
   remark-parse: ^8.0.3

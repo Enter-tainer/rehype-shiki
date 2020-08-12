@@ -76,158 +76,314 @@ This is in respect to the [mdast-util-to-hast code handler](https://github.com/s
 [rsclarke]: https://rsclarke.dev
 
 ```cpp
-#include <cstdio>
-const int N = 100005;
-int rt, tot, fa[N], ch[N][2], val[N], cnt[N], sz[N];
-struct Splay {
-  void maintain(int x) { sz[x] = sz[ch[x][0]] + sz[ch[x][1]] + cnt[x]; }
-  bool get(int x) { return x == ch[fa[x]][1]; }
-  void clear(int x) {
-    ch[x][0] = ch[x][1] = fa[x] = val[x] = sz[x] = cnt[x] = 0;
-  }
-  void rotate(int x) {
-    int y = fa[x], z = fa[y], chk = get(x);
-    ch[y][chk] = ch[x][chk ^ 1];
-    fa[ch[x][chk ^ 1]] = y;
-    ch[x][chk ^ 1] = y;
-    fa[y] = x;
-    fa[x] = z;
-    if (z) ch[z][y == ch[z][1]] = x;
-    maintain(x);
-    maintain(y);
-  }
-  void splay(int x) {
-    for (int f = fa[x]; f = fa[x], f; rotate(x))
-      if (fa[f]) rotate(get(x) == get(f) ? f : x);
-    rt = x;
-  }
-  void ins(int k) {
-    if (!rt) {
-      val[++tot] = k;
-      cnt[tot]++;
-      rt = tot;
-      maintain(rt);
-      return;
-    }
-    int cnr = rt, f = 0;
-    while (1) {
-      if (val[cnr] == k) {
-        cnt[cnr]++;
-        maintain(cnr);
-        maintain(f);
-        splay(cnr);
-        break;
-      }
-      f = cnr;
-      cnr = ch[cnr][val[cnr] < k];
-      if (!cnr) {
-        val[++tot] = k;
-        cnt[tot]++;
-        fa[tot] = f;
-        ch[f][val[f] < k] = tot;
-        maintain(tot);
-        maintain(f);
-        splay(tot);
-        break;
-      }
-    }
-  }
-  int rk(int k) {
-    int res = 0, cnr = rt;
-    while (1) {
-      if (k < val[cnr]) {
-        cnr = ch[cnr][0];
-      } else {
-        res += sz[ch[cnr][0]];
-        if (k == val[cnr]) {
-          splay(cnr);
-          return res + 1;
-        }
-        res += cnt[cnr];
-        cnr = ch[cnr][1];
-      }
-    }
-  }
-  int kth(int k) {
-    int cnr = rt;
-    while (1) {
-      if (ch[cnr][0] && k <= sz[ch[cnr][0]]) {
-        cnr = ch[cnr][0];
-      } else {
-        k -= cnt[cnr] + sz[ch[cnr][0]];
-        if (k <= 0) {
-          splay(cnr);
-          return val[cnr];
-        }
-        cnr = ch[cnr][1];
-      }
-    }
-  }
-  int pre() {
-    int cnr = ch[rt][0];
-    while (ch[cnr][1]) cnr = ch[cnr][1];
-    splay(cnr);
-    return cnr;
-  }
-  int nxt() {
-    int cnr = ch[rt][1];
-    while (ch[cnr][0]) cnr = ch[cnr][0];
-    splay(cnr);
-    return cnr;
-  }
-  void del(int k) {
-    rk(k);
-    if (cnt[rt] > 1) {
-      cnt[rt]--;
-      maintain(rt);
-      return;
-    }
-    if (!ch[rt][0] && !ch[rt][1]) {
-      clear(rt);
-      rt = 0;
-      return;
-    }
-    if (!ch[rt][0]) {
-      int cnr = rt;
-      rt = ch[rt][1];
-      fa[rt] = 0;
-      clear(cnr);
-      return;
-    }
-    if (!ch[rt][1]) {
-      int cnr = rt;
-      rt = ch[rt][0];
-      fa[rt] = 0;
-      clear(cnr);
-      return;
-    }
-    int cnr = rt;
-    int x = pre();
-    splay(x);
-    fa[ch[cnr][1]] = x;
-    ch[x][1] = ch[cnr][1];
-    clear(cnr);
-    maintain(rt);
-  }
-} tree;
+#include <algorithm>
+#include <memory>
+#include <vector>
+template <class Key, class Compare = std::less<Key>>
+class Set {
+ private:
+  enum NodeColor { kBlack = 0, kRed = 1 };
 
-int main() {
-  int n, opt, x;
-  for (scanf("%d", &n); n; --n) {
-    scanf("%d%d", &opt, &x);
-    if (opt == 1)
-      tree.ins(x);
-    else if (opt == 2)
-      tree.del(x);
-    else if (opt == 3)
-      printf("%d\n", tree.rk(x));
-    else if (opt == 4)
-      printf("%d\n", tree.kth(x));
-    else if (opt == 5)
-      tree.ins(x), printf("%d\n", val[tree.pre()]), tree.del(x);
+  struct Node {
+    Key key;
+    Node *lc{nullptr}, *rc{nullptr};
+    size_t size{0};
+    NodeColor color;  // the color of the parent link
+
+    Node(Key key, NodeColor color, size_t size)
+        : key(key), color(color), size(size) {}
+
+    Node() = default;
+  };
+
+  void destroyTree(Node *root) const {
+    if (root != nullptr) {
+      destroyTree(root->lc);
+      destroyTree(root->rc);
+      root->lc = root->rc = nullptr;
+      delete root;
+    }
+  }
+
+  bool is_red(const Node *nd) const {
+    return nd == nullptr ? false : nd->color;  // kRed == 1, kBlack == 0
+  }
+
+  size_t size(const Node *nd) const { return nd == nullptr ? 0 : nd->size; }
+
+  Node *rotate_left(Node *node) const {
+    // left rotate a red link
+    //          <1>                   <2>
+    //        /    \\               //    \
+    //       *      <2>    ==>     <1>     *
+    //             /   \          /   \
+    //            *     *        *     *
+    Node *res = node->rc;
+    node->rc = res->lc;
+    res->lc = node;
+    res->color = node->color;
+    node->color = kRed;
+    res->size = node->size;
+    node->size = size(node->lc) + size(node->rc) + 1;
+    return res;
+  }
+
+  Node *rotate_right(Node *node) const {
+    // right rotate a red link
+    //            <1>               <2>
+    //          //    \           /    \\
+    //         <2>     *   ==>   *      <1>
+    //        /   \                    /   \
+    //       *     *                  *     *
+    Node *res = node->lc;
+    node->lc = res->rc;
+    res->rc = node;
+    res->color = node->color;
+    node->color = kRed;
+    res->size = node->size;
+    node->size = size(node->lc) + size(node->rc) + 1;
+    return res;
+  }
+
+  NodeColor neg_color(NodeColor n) const { return n == kBlack ? kRed : kBlack; }
+
+  void color_flip(Node *node) const {
+    node->color = neg_color(node->color);
+    node->lc->color = neg_color(node->lc->color);
+    node->rc->color = neg_color(node->rc->color);
+  }
+
+  Node *insert(Node *root, const Key &key) const;
+  Node *delete_arbitrary(Node *root, Key key) const;
+  Node *delete_min(Node *root) const;
+  Node *move_red_right(Node *root) const;
+  Node *move_red_left(Node *root) const;
+  Node *fix_up(Node *root) const;
+  const Key &get_min(Node *root) const;
+  void serialize(Node *root, std::vector<Key> *) const;
+  void print_tree(Set::Node *root, int indent) const;
+  Compare cmp_ = Compare();
+  Node *root_{nullptr};
+
+ public:
+  typedef Key KeyType;
+  typedef Key ValueType;
+  typedef std::size_t SizeType;
+  typedef std::ptrdiff_t DifferenceType;
+  typedef Compare KeyCompare;
+  typedef Compare ValueCompare;
+  typedef Key &Reference;
+  typedef const Key &ConstReference;
+
+  Set() = default;
+
+  Set(Set &) = default;
+
+  Set(Set &&) noexcept = default;
+
+  ~Set() { destroyTree(root_); }
+
+  SizeType size() const;
+
+  SizeType count(const KeyType &key) const;
+
+  SizeType erase(const KeyType &key);
+
+  void clear();
+
+  void insert(const KeyType &key);
+
+  bool empty() const;
+
+  std::vector<Key> serialize() const;
+
+  void print_tree() const;
+};
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::SizeType Set<Key, Compare>::count(
+    ConstReference key) const {
+  Node *x = root_;
+  while (x != nullptr) {
+    if (key == x->key) return 1;
+    if (cmp_(key, x->key))  // if (key < x->key)
+      x = x->lc;
     else
-      tree.ins(x), printf("%d\n", val[tree.nxt()]), tree.del(x);
+      x = x->rc;
   }
   return 0;
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::SizeType Set<Key, Compare>::erase(
+    const KeyType &key) {
+  if (count(key) > 0) {
+    if (!is_red(root_->lc) && !(is_red(root_->rc))) root_->color = kRed;
+    root_ = delete_arbitrary(root_, key);
+    if (root_ != nullptr) root_->color = kBlack;
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+template <class Key, class Compare>
+void Set<Key, Compare>::clear() {
+  destroyTree(root_);
+  root_ = nullptr;
+}
+
+template <class Key, class Compare>
+void Set<Key, Compare>::insert(const KeyType &key) {
+  root_ = insert(root_, key);
+  root_->color = kBlack;
+}
+
+template <class Key, class Compare>
+bool Set<Key, Compare>::empty() const {
+  return size(root_) == 0;
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::Node *Set<Key, Compare>::insert(
+    Set::Node *root, const Key &key) const {
+  if (root == nullptr) return new Node(key, kRed, 1);
+  if (root->key == key)
+    ;
+  else if (cmp_(key, root->key))  // if (key < root->key)
+    root->lc = insert(root->lc, key);
+  else
+    root->rc = insert(root->rc, key);
+  return fix_up(root);
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::Node *Set<Key, Compare>::delete_min(
+    Set::Node *root) const {
+  if (root->lc == nullptr) {
+    delete root;
+    return nullptr;
+  }
+  if (!is_red(root->lc) && !is_red(root->lc->lc)) {
+    // make sure either root->lc or root->lc->lc is red
+    // thus make sure we will delete a red node in the end
+    root = move_red_left(root);
+  }
+  root->lc = delete_min(root->lc);
+  return fix_up(root);
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::Node *Set<Key, Compare>::move_red_right(
+    Set::Node *root) const {
+  color_flip(root);
+  if (is_red(root->lc->lc)) {  // assume that root->lc != nullptr when calling
+                               // this function
+    root = rotate_right(root);
+    color_flip(root);
+  }
+  return root;
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::Node *Set<Key, Compare>::move_red_left(
+    Set::Node *root) const {
+  color_flip(root);
+  if (is_red(root->rc->lc)) {
+    // assume that root->rc != nullptr when calling this function
+    root->rc = rotate_right(root->rc);
+    root = rotate_left(root);
+    color_flip(root);
+  }
+  return root;
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::Node *Set<Key, Compare>::fix_up(
+    Set::Node *root) const {
+  if (is_red(root->rc) && !is_red(root->lc))  // fix right leaned red link
+    root = rotate_left(root);
+  if (is_red(root->lc) &&
+      is_red(root->lc->lc))  // fix doubly linked left leaned red link
+    // if (root->lc == nullptr), then the second expr won't be evaluated
+    root = rotate_right(root);
+  if (is_red(root->lc) && is_red(root->rc))
+    // break up 4 node
+    color_flip(root);
+  root->size = size(root->lc) + size(root->rc) + 1;
+  return root;
+}
+
+template <class Key, class Compare>
+const Key &Set<Key, Compare>::get_min(Set::Node *root) const {
+  Node *x = root;
+  // will crash as intended when root == nullptr
+  for (; x->lc != nullptr; x = x->lc)
+    ;
+  return x->key;
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::SizeType Set<Key, Compare>::size() const {
+  return size(root_);
+}
+
+template <class Key, class Compare>
+typename Set<Key, Compare>::Node *Set<Key, Compare>::delete_arbitrary(
+    Set::Node *root, Key key) const {
+  if (cmp_(key, root->key)) {
+    // key < root->key
+    if (!is_red(root->lc) && !(is_red(root->lc->lc)))
+      root = move_red_left(root);
+    // ensure the invariant: either root->lc or root->lc->lc (or root and
+    // root->lc after dive into the function) is red, to ensure we will
+    // eventually delete a red node. therefore we will not break the black
+    // height balance
+    root->lc = delete_arbitrary(root->lc, key);
+  } else {
+    // key >= root->key
+    if (is_red(root->lc)) root = rotate_right(root);
+    if (key == root->key && root->rc == nullptr) {
+      delete root;
+      return nullptr;
+    }
+    if (!is_red(root->rc) && !is_red(root->rc->lc)) root = move_red_right(root);
+    if (key == root->key) {
+      root->key = get_min(root->rc);
+      root->rc = delete_min(root->rc);
+    } else {
+      root->rc = delete_arbitrary(root->rc, key);
+    }
+  }
+  return fix_up(root);
+}
+
+template <class Key, class Compare>
+std::vector<Key> Set<Key, Compare>::serialize() const {
+  std::vector<int> v;
+  serialize(root_, &v);
+  return v;
+}
+
+template <class Key, class Compare>
+void Set<Key, Compare>::serialize(Set::Node *root,
+                                  std::vector<Key> *res) const {
+  if (root == nullptr) return;
+  serialize(root->lc, res);
+  res->push_back(root->key);
+  serialize(root->rc, res);
+}
+
+template <class Key, class Compare>
+void Set<Key, Compare>::print_tree(Set::Node *root, int indent) const {
+  if (root == nullptr) return;
+  print_tree(root->lc, indent + 4);
+  std::cout << std::string(indent, '-') << root->key << std::endl;
+  print_tree(root->rc, indent + 4);
+}
+
+template <class Key, class Compare>
+void Set<Key, Compare>::print_tree() const {
+  print_tree(root_, 0);
 }
 ```
