@@ -1,5 +1,5 @@
 dependencies:
-  '@mgtd/shiki': 1.0.2
+  '@mgtd/shiki': 1.0.3
   hast-util-to-string: 1.0.4
   shiki-languages: 0.1.6
   unist-builder: 2.0.3
@@ -37,17 +37,26 @@ packages:
     dev: false
     resolution:
       integrity: sha512-45hfXeboRWm6RDyaB+Y7fsdnQzRh9wS7p9/km11YpNY+rJ6C1jx/8EG8bY1fyducr+YJ1LYAoD9QiVhBNchREw==
-  /@mgtd/shiki/1.0.2:
+  /@mgtd/shiki-themes/0.1.9_onigasm@2.2.4:
+    dependencies:
+      json5: 2.1.3
+      vscode-textmate: github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4
+    dev: false
+    peerDependencies:
+      onigasm: '*'
+    resolution:
+      integrity: sha512-x2e6Pi6TlQQV7V4NJN3lx2svow9QpTSG8Dj/Fs4SKIx7YfwTbv2MFa8oDMPEY10OMaRcMAlPe8rWhxHugTJqaQ==
+  /@mgtd/shiki/1.0.3:
     dependencies:
       '@mgtd/semantic-token-provider': 1.0.1
+      '@mgtd/shiki-themes': 0.1.9_onigasm@2.2.4
       lodash: 4.17.19
       onigasm: 2.2.4
       shiki-languages: 0.1.6_onigasm@2.2.4
-      shiki-themes: 0.1.7_onigasm@2.2.4
       vscode-textmate: github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4
     dev: false
     resolution:
-      integrity: sha512-1T0yR6df5uBN/DIioRNJPuBI8hVFptw2ggTH+dlmF+YAKRV6ZF4LHsrrO1egfmbHyuhbCm7QjFVN9ibIw7T8LQ==
+      integrity: sha512-rxdFxPZe39antPYiuCF/lEFvoG9TO6zD9eVEMNFx7rCS9cLmE+4PT4EFQv0y+8gl86ZKwm+SiqNgl0zOQ2DdGA==
   /@types/mdast/3.0.3:
     dependencies:
       '@types/unist': 2.0.3
@@ -468,15 +477,6 @@ packages:
       onigasm: '*'
     resolution:
       integrity: sha512-rMu+z97UCPKMtPBkzLBItReawXnlOgXZmELFwI/s3ATxd9VzJgSQTtQW/hmW5EYCrzF2kAUjoOnn+50/MPWjgQ==
-  /shiki-themes/0.1.7_onigasm@2.2.4:
-    dependencies:
-      json5: 2.1.3
-      vscode-textmate: github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4
-    dev: false
-    peerDependencies:
-      onigasm: '*'
-    resolution:
-      integrity: sha512-mpF/VynGun/uNdjOIPnyPv4boN/QYDh+zE94SavgvmatMHkXXjZhls19Xv9rcRwuxUrWfXjaPkEZj7VAk94GGg==
   /space-separated-tokens/1.1.5:
     dev: true
     resolution:
@@ -699,7 +699,7 @@ packages:
       tarball: 'https://codeload.github.com/octref/vscode-textmate/tar.gz/e65aabe2227febda7beaad31dd0fca1228c5ddf3'
     version: 4.0.1
 specifiers:
-  '@mgtd/shiki': ^1.0.2
+  '@mgtd/shiki': ^1.0.3
   hast-util-to-string: ^1.0.4
   rehype-stringify: ^8.0.0
   remark-parse: ^8.0.3
