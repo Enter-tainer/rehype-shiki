@@ -1,5 +1,5 @@
 dependencies:
-  '@mgtd/shiki': 1.0.4
+  '@mgtd/shiki': 1.0.5
   hast-util-to-string: 1.0.4
   shiki-languages: 0.1.6
   unist-builder: 2.0.3
@@ -37,7 +37,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-45hfXeboRWm6RDyaB+Y7fsdnQzRh9wS7p9/km11YpNY+rJ6C1jx/8EG8bY1fyducr+YJ1LYAoD9QiVhBNchREw==
-  /@mgtd/shiki-themes/0.1.10_onigasm@2.2.4:
+  /@mgtd/shiki-themes/0.1.11_onigasm@2.2.4:
     dependencies:
       json5: 2.1.3
       vscode-textmate: github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4
@@ -45,18 +45,18 @@ packages:
     peerDependencies:
       onigasm: '*'
     resolution:
-      integrity: sha512-/6x/VfF28DjPg0rOUEqCmuAiTzNujzqGpCB7W/QiMSVHJVD/xZkT9Q3t5IMhuguGXraAE5JsLdvu9NQSz0tJdg==
-  /@mgtd/shiki/1.0.4:
+      integrity: sha512-YA/C23lhH/qisKtl/ocWj88nciiAGwdwrN1IyebjjG6BAlEkjuq6QYvN9af8NrhkJTSuUh5poKNDrIX0JCEUQQ==
+  /@mgtd/shiki/1.0.5:
     dependencies:
       '@mgtd/semantic-token-provider': 1.0.1
-      '@mgtd/shiki-themes': 0.1.10_onigasm@2.2.4
+      '@mgtd/shiki-themes': 0.1.11_onigasm@2.2.4
       lodash: 4.17.19
       onigasm: 2.2.4
       shiki-languages: 0.1.6_onigasm@2.2.4
       vscode-textmate: github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4
     dev: false
     resolution:
-      integrity: sha512-XyKuZZBn0LqRdsvVU0nKzWmXfwykWk+ESxgGEYBtWVPHE+eHX57kjnMNpOd2k2Gx/KyiNmBuBy2IJAGXdZII/g==
+      integrity: sha512-x19SI56RlPpldBGLjYz50r684dy9BjGAbiellfp/YOw/dd/zMa+tonHZy7JNA7JQDlqAbaCsKuAab8iAh7qWTQ==
   /@types/mdast/3.0.3:
     dependencies:
       '@types/unist': 2.0.3
@@ -684,6 +684,7 @@ packages:
       onigasm: ^2.1.0
       oniguruma: ^7.0.0
     resolution:
+      registry: 'https://registry.npmjs.org/'
       tarball: 'https://codeload.github.com/octref/vscode-textmate/tar.gz/e65aabe2227febda7beaad31dd0fca1228c5ddf3'
     version: 4.0.1
   github.com/octref/vscode-textmate/e65aabe2227febda7beaad31dd0fca1228c5ddf3_onigasm@2.2.4:
@@ -696,10 +697,11 @@ packages:
       onigasm: ^2.1.0
       oniguruma: ^7.0.0
     resolution:
+      registry: 'https://registry.npmjs.org/'
       tarball: 'https://codeload.github.com/octref/vscode-textmate/tar.gz/e65aabe2227febda7beaad31dd0fca1228c5ddf3'
     version: 4.0.1
 specifiers:
-  '@mgtd/shiki': ^1.0.4
+  '@mgtd/shiki': ^1.0.5
   hast-util-to-string: ^1.0.4
   rehype-stringify: ^8.0.0
   remark-parse: ^8.0.3

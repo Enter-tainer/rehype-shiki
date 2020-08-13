@@ -1,6 +1,6 @@
 {
   "name": "@mgtd/rehype-shiki",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "rehype plugin to highlight code blocks with shiki",
   "main": "index.js",
   "files": [
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/Enter-tainer/rehype-shiki#readme",
   "dependencies": {
-    "@mgtd/shiki": "^1.0.4",
+    "@mgtd/shiki": "^1.0.5",
     "hast-util-to-string": "^1.0.4",
     "shiki-languages": "^0.1.6",
     "unist-builder": "^2.0.3",
